@@ -1,6 +1,7 @@
 # backend/main.py
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from routers.generate import router as generate_router
 
 app = FastAPI(title="Meeting Minutes API")
 
@@ -10,6 +11,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(generate_router)
 
 
 @app.get("/health")
