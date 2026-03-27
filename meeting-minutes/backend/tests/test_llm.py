@@ -1,6 +1,6 @@
 import json
 import pytest
-from unittest.mock import patch, AsyncMock
+from unittest.mock import patch, AsyncMock, MagicMock
 from services.llm import generate_minutes
 
 
@@ -14,7 +14,7 @@ async def test_generate_minutes_returns_structured_result():
         "actionItems": ["액션아이템 1"]
     })
 
-    mock_response = AsyncMock()
+    mock_response = MagicMock()
     mock_response.status_code = 200
     mock_response.json.return_value = {
         "choices": [{"message": {"content": mock_llm_response}}]

@@ -39,5 +39,5 @@ async def generate_minutes(transcript: str) -> dict:
             timeout=60.0,
         )
 
-    content = (await response.json())["choices"][0]["message"]["content"]
+    content = response.json()["choices"][0]["message"]["content"]
     return json.loads(content)
