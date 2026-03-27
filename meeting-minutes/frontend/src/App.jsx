@@ -74,7 +74,7 @@ function App() {
   return (
     <div className="min-h-screen bg-dark-900 text-gray-100">
       <header className="border-b border-dark-700 px-6 py-4">
-        <h1 className="text-2xl font-bold text-emerald-400">KAI 회의록</h1>
+        <h1 className="text-2xl font-bold text-emerald-400">Meeting Minutes</h1>
       </header>
 
       <main className="max-w-7xl mx-auto p-6 space-y-6">
