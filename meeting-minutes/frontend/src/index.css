@@ -1,0 +1,11 @@
+/* frontend/src/index.css */
+@import "tailwindcss";
+
+@theme {
+  --color-emerald-400: #34d399;
+  --color-emerald-500: #10b981;
+  --color-emerald-600: #059669;
+  --color-dark-800: #1e1e2e;
+  --color-dark-900: #11111b;
+  --color-dark-700: #313244;
+}
