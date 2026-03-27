@@ -1,4 +1,8 @@
 # backend/main.py
+from dotenv import load_dotenv
+
+load_dotenv()
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routers.generate import router as generate_router
