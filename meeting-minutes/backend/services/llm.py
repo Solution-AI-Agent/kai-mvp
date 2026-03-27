@@ -41,9 +41,25 @@ async def generate_minutes(transcript: str, model: str = "openai/gpt-4o-mini") -
             timeout=120.0,
         )
 
+    if response.status_code != 200:
+        raise RuntimeError(f"OpenRouter API 오류 (HTTP {response.status_code}): {response.text}")
+
     data = response.json()
     if "error" in data:
         raise RuntimeError(f"OpenRouter API 오류: {data['error'].get('message', data['error'])}")
 
     content = data["choices"][0]["message"]["content"]
-    return json.loads(content)
+
+    # LLM이 ```json ... ``` 으로 감싸는 경우 처리
+    content = content.strip()
+    if content.startswith("```"):
+        lines = content.split("\n")
+        lines = lines[1:]  # ```json 제거
+        if lines and lines[-1].strip() == "```":
+            lines = lines[:-1]  # 닫는 ``` 제거
+        content = "\n".join(lines).strip()
+
+    try:
+        return json.loads(content)
+    except json.JSONDecodeError:
+        raise RuntimeError(f"LLM 응답을 JSON으로 파싱할 수 없습니다: {content[:200]}")
