@@ -52,3 +52,38 @@ def test_generate_endpoint_no_file():
     """파일 없이 요청하면 422를 반환해야 한다."""
     response = client.post("/api/generate")
     assert response.status_code == 422
+
+
+def test_generate_endpoint_markdown_contains_sections():
+    """응답의 markdown에 모든 섹션이 포함되어야 한다."""
+    mock_minutes = {
+        "summary": "테스트 요약",
+        "discussions": ["논의 1"],
+        "decisions": ["결정 1"],
+        "actionItems": ["액션 1"],
+    }
+
+    with patch("routers.generate.transcribe_audio", return_value="변환된 텍스트"), \
+         patch("routers.generate.generate_minutes", new_callable=AsyncMock, return_value=mock_minutes):
+
+        wav_bytes = _make_wav_bytes()
+        response = client.post(
+            "/api/generate",
+            files={"file": ("test.wav", wav_bytes, "audio/wav")},
+        )
+
+    md = response.json()["markdown"]
+    assert "## 요약" in md
+    assert "## 주요 논의사항" in md
+    assert "## 결정사항" in md
+    assert "## 액션아이템" in md
+    assert "## STT 원문" in md
+
+
+def test_generate_endpoint_rejects_invalid_format():
+    """mp3/wav가 아닌 파일은 400 에러를 반환해야 한다."""
+    response = client.post(
+        "/api/generate",
+        files={"file": ("test.txt", b"hello", "text/plain")},
+    )
+    assert response.status_code == 400
