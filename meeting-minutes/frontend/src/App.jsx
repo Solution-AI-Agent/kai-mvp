@@ -3,8 +3,18 @@ import { useState } from "react";
 import FileUpload from "./components/FileUpload";
 import ResultView from "./components/ResultView";
 
+const MODELS = [
+  { id: "openai/gpt-4o-mini", name: "GPT-4o Mini" },
+  { id: "openai/gpt-4o", name: "GPT-4o" },
+  { id: "anthropic/claude-sonnet-4", name: "Claude Sonnet 4" },
+  { id: "anthropic/claude-haiku-4", name: "Claude Haiku 4" },
+  { id: "google/gemini-2.5-flash-preview", name: "Gemini 2.5 Flash" },
+  { id: "meta-llama/llama-4-maverick", name: "Llama 4 Maverick" },
+];
+
 function App() {
   const [file, setFile] = useState(null);
+  const [model, setModel] = useState(MODELS[0].id);
   const [result, setResult] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [status, setStatus] = useState("");
@@ -23,14 +33,20 @@ function App() {
 
     try {
       setStatus("회의록 생성 중...");
-      const response = await fetch("/api/generate", {
+      const response = await fetch(`/api/generate?model=${encodeURIComponent(model)}`, {
         method: "POST",
         body: formData,
       });
 
       if (!response.ok) {
-        const err = await response.json();
-        throw new Error(err.detail || "서버 오류가 발생했습니다.");
+        let message = "서버 오류가 발생했습니다.";
+        try {
+          const err = await response.json();
+          message = err.detail || message;
+        } catch {
+          message = await response.text() || message;
+        }
+        throw new Error(message);
       }
 
       const data = await response.json();
@@ -66,6 +82,16 @@ function App() {
           <div className="flex-1">
             <FileUpload onFileSelect={setFile} file={file} isLoading={isLoading} />
           </div>
+          <select
+            value={model}
+            onChange={(e) => setModel(e.target.value)}
+            disabled={isLoading}
+            className="px-4 py-3 bg-dark-800 border border-dark-700 rounded-lg text-gray-100 focus:border-emerald-500 focus:outline-none"
+          >
+            {MODELS.map((m) => (
+              <option key={m.id} value={m.id}>{m.name}</option>
+            ))}
+          </select>
           <button
             onClick={handleGenerate}
             disabled={!file || isLoading}

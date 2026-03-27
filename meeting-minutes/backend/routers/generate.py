@@ -24,7 +24,7 @@ def _build_markdown(minutes: dict, transcript: str) -> str:
 
 
 @router.post("/api/generate")
-async def generate(file: UploadFile = File(...)):
+async def generate(file: UploadFile = File(...), model: str = "openai/gpt-4o-mini"):
     suffix = os.path.splitext(file.filename or ".wav")[1]
     if suffix.lower() not in (".mp3", ".wav"):
         raise HTTPException(status_code=400, detail="mp3 또는 wav 파일만 지원합니다.")
@@ -36,8 +36,10 @@ async def generate(file: UploadFile = File(...)):
 
     try:
         transcript = transcribe_audio(tmp_path)
-        minutes = await generate_minutes(transcript)
+        minutes = await generate_minutes(transcript, model=model)
         markdown = _build_markdown(minutes, transcript)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
     finally:
         os.unlink(tmp_path)
 

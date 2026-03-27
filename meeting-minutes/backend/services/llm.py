@@ -16,11 +16,13 @@ SYSTEM_PROMPT = """당신은 회의록 작성 전문가입니다.
 }"""
 
 
-async def generate_minutes(transcript: str) -> dict:
+async def generate_minutes(transcript: str, model: str = "openai/gpt-4o-mini") -> dict:
     if not transcript.strip():
         raise ValueError("Transcript is empty")
 
     api_key = os.environ.get("OPENROUTER_API_KEY", "")
+    if not api_key:
+        raise ValueError("OPENROUTER_API_KEY 환경변수가 설정되지 않았습니다.")
 
     async with httpx.AsyncClient() as client:
         response = await client.post(
@@ -30,14 +32,18 @@ async def generate_minutes(transcript: str) -> dict:
                 "Content-Type": "application/json",
             },
             json={
-                "model": "openai/gpt-4o-mini",
+                "model": model,
                 "messages": [
                     {"role": "system", "content": SYSTEM_PROMPT},
                     {"role": "user", "content": transcript},
                 ],
             },
-            timeout=60.0,
+            timeout=120.0,
         )
 
-    content = response.json()["choices"][0]["message"]["content"]
+    data = response.json()
+    if "error" in data:
+        raise RuntimeError(f"OpenRouter API 오류: {data['error'].get('message', data['error'])}")
+
+    content = data["choices"][0]["message"]["content"]
     return json.loads(content)
