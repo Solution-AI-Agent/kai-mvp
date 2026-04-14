@@ -1,4 +1,4 @@
-# (Meeting Minutes)[https://meeting-minutes.kaizero.dev]
+# [Meeting Minutes](https://meeting-minutes.kaizero.dev)
 
 회의 녹음 파일을 업로드하면 자동으로 회의록을 생성하는 웹 앱
 
