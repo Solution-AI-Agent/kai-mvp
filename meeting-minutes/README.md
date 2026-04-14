@@ -1,6 +1,6 @@
-# Meeting Minutes
+# (Meeting Minutes)[https://meeting-minutes.kaizero.dev]
 
-회의 녹음 파일을 업로드하면 자동으로 회의록을 생성하는 웹 앱.
+회의 녹음 파일을 업로드하면 자동으로 회의록을 생성하는 웹 앱
 
 - **STT**: 로컬 Whisper 모델로 음성을 텍스트로 변환
 - **LLM**: OpenRouter API를 통해 회의록 자동 작성
