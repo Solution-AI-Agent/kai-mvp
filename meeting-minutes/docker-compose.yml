@@ -1,0 +1,11 @@
+services:
+  app:
+    build:
+      context: .
+    container_name: meeting-minutes
+    env_file:
+      - ./backend/.env
+    ports:
+      - "9010:9010"  # web (nginx)
+      - "9011:9011"  # api (fastapi)
+    restart: unless-stopped

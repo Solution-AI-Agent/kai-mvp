@@ -11,7 +11,11 @@ app = FastAPI(title="Meeting Minutes API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=[
+        "http://localhost:5173",
+        "http://localhost:9010",
+        "http://localhost:9011",
+    ],
     allow_methods=["*"],
     allow_headers=["*"],
 )

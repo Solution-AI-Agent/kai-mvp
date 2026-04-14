@@ -1,0 +1,11 @@
+**/__pycache__
+**/*.pyc
+**/.pytest_cache
+**/node_modules
+frontend/dist
+frontend/.vite
+backend/tests
+backend/.venv
+.git
+docs
+sample_meeting.mp3
