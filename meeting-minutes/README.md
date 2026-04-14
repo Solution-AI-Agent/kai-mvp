@@ -26,11 +26,13 @@
 ### 설치
 
 ```bash
+# 환경변수 (프로젝트 루트)
+cp .env.sample .env
+# .env 파일에서 OPENROUTER_API_KEY를 실제 키로 수정
+
 # 백엔드
 cd backend
 pip install -r requirements.txt
-cp .env.sample .env
-# .env 파일에서 OPENROUTER_API_KEY를 실제 키로 수정
 
 # 프론트엔드
 cd ../frontend
